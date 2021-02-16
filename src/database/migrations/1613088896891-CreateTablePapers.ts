@@ -1,4 +1,9 @@
-import { MigrationInterface, QueryRunner, Table } from 'typeorm';
+import {
+  MigrationInterface,
+  QueryRunner,
+  Table,
+  TableForeignKey,
+} from 'typeorm';
 
 export default class CreateTablePapers1613088896891
   implements MigrationInterface {
@@ -15,33 +20,58 @@ export default class CreateTablePapers1613088896891
             default: 'uuid_generate_v4()',
           },
           {
-            name: 'name',
+            name: 'author',
             type: 'varchar',
           },
           {
-            name: 'email',
+            name: 'professor',
             type: 'varchar',
           },
           {
-            name: 'password',
+            name: 'title',
             type: 'varchar',
+          },
+          {
+            name: 'subtitle',
+            type: 'varchar',
+          },
+          {
+            name: 'uploaded_by',
+            type: 'uuid',
+          },
+          {
+            name: 'publication_dt',
+            type: 'timestamp without time zone',
           },
           {
             name: 'created_at',
-            type: 'timestamp',
+            type: 'timestamp without time zone',
             default: 'now()',
           },
           {
             name: 'updated_at',
-            type: 'timestamp',
+            type: 'timestamp without time zone',
             default: 'now()',
           },
         ],
       }),
     );
+
+    await queryRunner.createForeignKey(
+      'papers',
+      new TableForeignKey({
+        name: 'fk_paper_user',
+        columnNames: ['uploaded_by'],
+        referencedColumnNames: ['id'],
+        referencedTableName: 'users',
+        onDelete: 'CASCADE',
+        onUpdate: 'CASCADE',
+      }),
+    );
   }
 
   public async down(queryRunner: QueryRunner): Promise<void> {
+    await queryRunner.dropForeignKey('papers', 'fk_paper_user');
     await queryRunner.dropTable('papers');
   }
 }
