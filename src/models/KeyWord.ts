@@ -1,6 +1,7 @@
 import {
   Column,
   CreateDateColumn,
+  Entity,
   JoinTable,
   ManyToMany,
   PrimaryGeneratedColumn,
@@ -9,6 +10,7 @@ import {
 
 import Paper from './Paper';
 
+@Entity('key_words')
 class KeyWord {
   @PrimaryGeneratedColumn('increment')
   id: number;
