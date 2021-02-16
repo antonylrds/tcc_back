@@ -1,7 +1,9 @@
 import { Router } from 'express';
 
+import papersRouter from './papers.routes';
+
 const routes = Router();
 
-routes.get('/', (request, response) => response.json({ msg: 'Hello world' }));
+routes.use('/papers', papersRouter);
 
 export default routes;
