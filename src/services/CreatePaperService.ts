@@ -1,4 +1,5 @@
 import { getRepository } from 'typeorm';
+import KeyWord from '../models/KeyWord';
 import Paper from '../models/Paper';
 import User from '../models/User';
 
@@ -23,12 +24,15 @@ class CreatePaperService {
   }: PaperDTO): Promise<Paper> {
     const papersRepository = getRepository(Paper);
     const usersRepository = getRepository(User);
+    const keywordsRepository = getRepository(KeyWord);
 
     const user = await usersRepository.findOne(user_id);
 
     if (!user) {
       throw new Error('User not found');
     }
+
+    // Create Nonexisting keywords and get ids from all
 
     const paper = papersRepository.create({
       author,
