@@ -2,8 +2,11 @@ import { Router } from 'express';
 
 import ListPapersService from '../services/ListPapersService';
 import CreatePaperService from '../services/CreatePaperService';
+import ensureAuthenticated from '../middlewares/ensureAuthenticate';
 
 const papersRouter = Router();
+
+papersRouter.use(ensureAuthenticated);
 
 papersRouter.get('/', async (resquest, response) => {
   const listPapersService = new ListPapersService();
