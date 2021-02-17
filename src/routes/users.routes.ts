@@ -1,5 +1,4 @@
 import { Router } from 'express';
-import User from '../models/User';
 
 import CreateUserService from '../services/CreateUserService';
 
@@ -18,8 +17,6 @@ usersRouter.post('/', async (request, response) => {
     email,
     password,
   });
-
-  delete user.id;
 
   return response.json(user);
 });
