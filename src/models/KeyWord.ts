@@ -31,6 +31,10 @@ class KeyWord {
       name: 'word_id',
       referencedColumnName: 'id',
     },
+    inverseJoinColumn: {
+      name: 'paper_id',
+      referencedColumnName: 'id',
+    },
   })
   papers: Paper[];
 }

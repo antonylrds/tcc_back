@@ -1,4 +1,4 @@
-import { getRepository } from 'typeorm';
+import { getRepository, In } from 'typeorm';
 import KeyWord from '../models/KeyWord';
 import Paper from '../models/Paper';
 import User from '../models/User';
@@ -21,6 +21,7 @@ class CreatePaperService {
     subtitle,
     user_id,
     publicationDate,
+    keywords,
   }: PaperDTO): Promise<Paper> {
     const papersRepository = getRepository(Paper);
     const usersRepository = getRepository(User);
@@ -32,15 +33,30 @@ class CreatePaperService {
       throw new Error('User not found');
     }
 
-    // Create Nonexisting keywords and get ids from all
+    const existingKeywords = await keywordsRepository.find({
+      where: { word: In(keywords) },
+    });
+
+    const existingWords = existingKeywords.map(keyword => keyword.word);
+
+    const nonExistingWords = keywords.filter(
+      keyword => !existingWords.includes(keyword),
+    );
+
+    const newKeywords = nonExistingWords.map(keyword =>
+      keywordsRepository.create({ word: keyword }),
+    );
+
+    await keywordsRepository.save(newKeywords);
 
     const paper = papersRepository.create({
       author,
       professor,
       title,
       subtitle,
-      publication_date: publicationDate,
+      publication_dt: publicationDate,
       uploaded_by: user,
+      keyWords: [...existingKeywords, ...newKeywords],
     });
 
     await papersRepository.save(paper);

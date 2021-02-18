@@ -25,7 +25,7 @@ class Paper {
   professor: string;
 
   @Column('timestamp without time zone')
-  publication_date: Date;
+  publication_dt: Date;
 
   @Column()
   title: string;
@@ -47,6 +47,10 @@ class Paper {
   @JoinTable({
     name: 'key_word_paper',
     joinColumn: { name: 'paper_id', referencedColumnName: 'id' },
+    inverseJoinColumn: {
+      name: 'word_id',
+      referencedColumnName: 'id',
+    },
   })
   keyWords: KeyWord[];
 }
