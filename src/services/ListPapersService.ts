@@ -6,7 +6,7 @@ class ListPapersService {
   public async execute(): Promise<Paper[]> {
     const papersRepository = getRepository(Paper);
 
-    const papers = await papersRepository.find();
+    const papers = await papersRepository.find({ relations: ['keyWords'] });
 
     return papers;
   }
