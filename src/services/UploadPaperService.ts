@@ -1,4 +1,8 @@
+import fs from 'fs';
+import path from 'path';
 import { getRepository } from 'typeorm';
+
+import uploadConfig from '../config/upload';
 
 import Paper from '../models/Paper';
 
@@ -15,6 +19,15 @@ class UploadPaperService {
 
     if (!paper) {
       throw new Error('Papers not found');
+    }
+
+    if (paper.path) {
+      const paperPath = path.join(uploadConfig.directory, paper.path);
+      const paperExists = await fs.promises.stat(paperPath);
+
+      if (paperExists) {
+        await fs.promises.unlink(paperPath);
+      }
     }
 
     paper.path = filename;
