@@ -37,6 +37,9 @@ class Paper {
   @JoinColumn({ name: 'uploaded_by' })
   uploaded_by: User;
 
+  @Column()
+  path: string;
+
   @CreateDateColumn()
   created_at: Date;
 

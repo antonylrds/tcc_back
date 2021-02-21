@@ -1,10 +1,15 @@
 import { Router } from 'express';
+import multer from 'multer';
+import uploadConfig from '../config/upload';
 
 import ListPapersService from '../services/ListPapersService';
 import CreatePaperService from '../services/CreatePaperService';
+import UploadPaperService from '../services/UploadPaperService';
+
 import ensureAuthenticated from '../middlewares/ensureAuthenticate';
 
 const papersRouter = Router();
+const upload = multer(uploadConfig);
 
 papersRouter.use(ensureAuthenticated);
 
@@ -35,6 +40,19 @@ papersRouter.post('/', async (request, response) => {
     publicationDate,
     user_id: request.user.id,
     keywords,
+  });
+
+  return response.json(paper);
+});
+
+papersRouter.patch('/:id', upload.single('file'), async (request, response) => {
+  const uploadPaperService = new UploadPaperService();
+
+  const { id } = request.params;
+
+  const paper = await uploadPaperService.execute({
+    id,
+    filename: request.file.filename,
   });
 
   return response.json(paper);
