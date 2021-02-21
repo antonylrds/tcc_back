@@ -21,7 +21,7 @@ papersRouter.get('/', async (resquest, response) => {
   return response.json(papers);
 });
 
-papersRouter.post('/', async (request, response) => {
+papersRouter.post('/', upload.single('file'), async (request, response) => {
   const {
     author,
     professor,
@@ -31,6 +31,8 @@ papersRouter.post('/', async (request, response) => {
     keywords,
   } = request.body;
 
+  const parsedKeywords = JSON.parse(keywords);
+
   const createPaperService = new CreatePaperService();
   const paper = await createPaperService.execute({
     author,
@@ -39,7 +41,8 @@ papersRouter.post('/', async (request, response) => {
     subtitle,
     publicationDate,
     user_id: request.user.id,
-    keywords,
+    keywords: parsedKeywords,
+    filename: request.file.filename,
   });
 
   return response.json(paper);
