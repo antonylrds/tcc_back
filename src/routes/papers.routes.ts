@@ -45,6 +45,10 @@ papersRouter.post('/', upload.single('file'), async (request, response) => {
     filename: request.file.filename,
   });
 
+  delete paper.id;
+  delete paper.uploaded_by.id;
+  delete paper.uploaded_by.password;
+
   return response.json(paper);
 });
 
@@ -61,11 +65,11 @@ papersRouter.patch('/:id', upload.single('file'), async (request, response) => {
   return response.json(paper);
 });
 
-papersRouter.put('/', (request, response) => {
+papersRouter.put('/:id', (request, response) => {
   return response.json({ msg: true });
 });
 
-papersRouter.delete('/', (request, response) => {
+papersRouter.delete('/:id', (request, response) => {
   return response.json({ msg: true });
 });
 
