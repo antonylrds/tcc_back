@@ -5,6 +5,7 @@ import uploadConfig from '../config/upload';
 import ListPapersService from '../services/ListPapersService';
 import CreatePaperService from '../services/CreatePaperService';
 import UploadPaperService from '../services/UploadPaperService';
+import DeletePaperService from '../services/DeletePaperService';
 
 import ensureAuthenticated from '../middlewares/ensureAuthenticate';
 
@@ -69,8 +70,12 @@ papersRouter.put('/:id', (request, response) => {
   return response.json({ msg: true });
 });
 
-papersRouter.delete('/:id', (request, response) => {
-  return response.json({ msg: true });
+papersRouter.delete('/:id', async (request, response) => {
+  const deletePaperService = new DeletePaperService();
+
+  await deletePaperService.execute(request.params.id);
+
+  return response.status(204).send();
 });
 
 export default papersRouter;
