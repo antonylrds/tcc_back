@@ -6,6 +6,7 @@ import ListPapersService from '../services/ListPapersService';
 import CreatePaperService from '../services/CreatePaperService';
 import UploadPaperService from '../services/UploadPaperService';
 import DeletePaperService from '../services/DeletePaperService';
+import UpdatePaperService from '../services/UpdatePaperService';
 
 import ensureAuthenticated from '../middlewares/ensureAuthenticate';
 
@@ -66,8 +67,28 @@ papersRouter.patch('/:id', upload.single('file'), async (request, response) => {
   return response.json(paper);
 });
 
-papersRouter.put('/:id', (request, response) => {
-  return response.json({ msg: true });
+papersRouter.put('/:id', async (request, response) => {
+  const updatePaperService = new UpdatePaperService();
+  const {
+    author,
+    professor,
+    title,
+    subtitle,
+    publicationDate,
+    keywords,
+  } = request.body;
+
+  const paper = await updatePaperService.excute({
+    id: request.params.id,
+    author,
+    professor,
+    title,
+    subtitle,
+    publicationDate,
+    keywords,
+  });
+
+  return response.json(paper);
 });
 
 papersRouter.delete('/:id', async (request, response) => {
