@@ -6,7 +6,7 @@ import authConfig from '../config/auth';
 interface TokenPayload {
   iat: number;
   exp: number;
-  subject: string;
+  sub: string;
 }
 
 export default function ensureAuthenticated(
@@ -22,13 +22,17 @@ export default function ensureAuthenticated(
 
   const [, token] = authHeader.split(' ');
 
-  const decoded = verify(token, authConfig.secret);
+  try {
+    const decoded = verify(token, authConfig.secret);
 
-  const { subject } = decoded as TokenPayload;
+    const { sub: subject } = decoded as TokenPayload;
 
-  request.user = {
-    id: subject,
-  };
+    request.user = {
+      id: subject,
+    };
 
-  return next();
+    return next();
+  } catch (err) {
+    throw new Error('Invalid Token');
+  }
 }
