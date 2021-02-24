@@ -9,6 +9,8 @@ interface OptionsDTO {
   publicationDateFinal: Date;
   title: string;
   subtitle: string;
+  page: number;
+  limit: number;
 }
 
 class ListPapersService {
@@ -19,6 +21,8 @@ class ListPapersService {
     publicationDateFinal,
     title,
     subtitle,
+    limit,
+    page,
   }: OptionsDTO): Promise<Paper[]> {
     const papersRepository = getRepository(Paper);
 
@@ -31,6 +35,8 @@ class ListPapersService {
         subtitle: ILike(`%${subtitle}%`),
         publication_dt: Between(publicationDateInitial, publicationDateFinal),
       },
+      take: limit,
+      skip: (page - 1) * limit,
     });
 
     return papers;

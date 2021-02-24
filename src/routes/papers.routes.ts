@@ -18,15 +18,26 @@ papersRouter.use(ensureAuthenticated);
 papersRouter.get('/', async (request, response) => {
   const listPapersService = new ListPapersService();
 
-  const { author, professor, from, to, title, subtitle } = request.query;
+  const {
+    author,
+    professor,
+    from,
+    to,
+    title,
+    subtitle,
+    page,
+    limit,
+  } = request.query;
 
   const objDTO = {
-    author: author ? `${author}` : '',
-    professor: professor ? `${professor}` : '',
-    title: title ? `${title}` : '',
-    subtitle: subtitle ? `${subtitle}` : '',
+    author: (author as string) || '',
+    professor: (professor as string) || '',
+    title: (title as string) || '',
+    subtitle: (subtitle as string) || '',
     publicationDateInitial: from ? new Date(`${from}`) : new Date(1),
     publicationDateFinal: to ? new Date(`${to}T20:59:59`) : new Date(),
+    page: parseInt(page as string, 10),
+    limit: parseInt(limit as string, 10),
   };
 
   const papers = await listPapersService.execute(objDTO);
