@@ -15,10 +15,21 @@ const upload = multer(uploadConfig);
 
 papersRouter.use(ensureAuthenticated);
 
-papersRouter.get('/', async (resquest, response) => {
+papersRouter.get('/', async (request, response) => {
   const listPapersService = new ListPapersService();
 
-  const papers = await listPapersService.execute();
+  const { author, professor, from, to, title, subtitle } = request.query;
+
+  const objDTO = {
+    author: author ? `${author}` : '',
+    professor: professor ? `${professor}` : '',
+    title: title ? `${title}` : '',
+    subtitle: subtitle ? `${subtitle}` : '',
+    publicationDateInitial: from ? new Date(`${from}`) : new Date(1),
+    publicationDateFinal: to ? new Date(`${to}T20:59:59`) : new Date(),
+  };
+
+  const papers = await listPapersService.execute(objDTO);
 
   return response.json(papers);
 });

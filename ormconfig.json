@@ -5,6 +5,7 @@
   "username": "postgres",
   "password": "admin1234",
   "database": "tcc",
+  "logging": true,
   "entities": [
     "./src/models/*.ts"
   ],
