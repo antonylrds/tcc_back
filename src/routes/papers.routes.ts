@@ -27,6 +27,7 @@ papersRouter.get('/', async (request, response) => {
     subtitle,
     page,
     limit,
+    keywords,
   } = request.query;
 
   const objDTO = {
@@ -34,10 +35,11 @@ papersRouter.get('/', async (request, response) => {
     professor: (professor as string) || '',
     title: (title as string) || '',
     subtitle: (subtitle as string) || '',
-    publicationDateInitial: from ? new Date(`${from}`) : new Date(1),
-    publicationDateFinal: to ? new Date(`${to}T20:59:59`) : new Date(),
-    page: parseInt(page as string, 10),
-    limit: parseInt(limit as string, 10),
+    publicationDateInitial: from ? `${from} 00:00:00` : null,
+    publicationDateFinal: to ? `${to} 23:59:59` : null,
+    page: page ? parseInt(page as string, 10) : 1,
+    limit: limit ? parseInt(limit as string, 10) : 10,
+    keywords: keywords ? JSON.parse(String(keywords)) : [],
   };
 
   const papers = await listPapersService.execute(objDTO);

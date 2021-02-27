@@ -40,10 +40,10 @@ class Paper {
   @Column()
   path: string;
 
-  @CreateDateColumn()
+  @CreateDateColumn({ select: false })
   created_at: Date;
 
-  @UpdateDateColumn()
+  @UpdateDateColumn({ select: false })
   updated_at: Date;
 
   @ManyToMany(() => KeyWord)
