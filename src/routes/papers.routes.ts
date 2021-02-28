@@ -1,5 +1,6 @@
 import { Router } from 'express';
 import multer from 'multer';
+import * as Yup from 'yup';
 import uploadConfig from '../config/upload';
 
 import ListPapersService from '../services/ListPapersService';
@@ -9,6 +10,7 @@ import DeletePaperService from '../services/DeletePaperService';
 import UpdatePaperService from '../services/UpdatePaperService';
 
 import ensureAuthenticated from '../middlewares/ensureAuthenticate';
+import AppError from '../errors/AppError';
 
 const papersRouter = Router();
 const upload = multer(uploadConfig);
@@ -16,6 +18,18 @@ const upload = multer(uploadConfig);
 papersRouter.use(ensureAuthenticated);
 
 papersRouter.get('/', async (request, response) => {
+  const schema = Yup.object().shape({
+    author: Yup.string(),
+    from: Yup.date(),
+    to: Yup.date(),
+  });
+
+  try {
+    await schema.validate(request.query, { abortEarly: false });
+  } catch (err) {
+    throw new AppError(err.errors);
+  }
+
   const listPapersService = new ListPapersService();
 
   const {
@@ -48,6 +62,21 @@ papersRouter.get('/', async (request, response) => {
 });
 
 papersRouter.post('/', upload.single('file'), async (request, response) => {
+  const schema = Yup.object().shape({
+    author: Yup.string().required('Autor(a) é obrigatório'),
+    professor: Yup.string().required('Orientador é obrigatório'),
+    title: Yup.string().required('Título é obrigatório'),
+    subtitle: Yup.string().required('Subtítulo é obrigatório'),
+    publicationDate: Yup.date().required('Data de publicação é obrigatório'),
+    keywords: Yup.array().required('Informe pelo menos uma palavra-chave'),
+  });
+
+  try {
+    await schema.validate(request.body, { abortEarly: false });
+  } catch (err) {
+    throw new AppError(err.errors);
+  }
+
   const {
     author,
     professor,
@@ -57,7 +86,11 @@ papersRouter.post('/', upload.single('file'), async (request, response) => {
     keywords,
   } = request.body;
 
-  const parsedKeywords = JSON.parse(keywords);
+  const parsedKeywords: string[] = JSON.parse(keywords);
+
+  if (parsedKeywords.length < 1) {
+    throw new AppError('Informe pelo menos uma palavra-chave');
+  }
 
   const createPaperService = new CreatePaperService();
   const paper = await createPaperService.execute({
@@ -92,6 +125,21 @@ papersRouter.patch('/:id', upload.single('file'), async (request, response) => {
 });
 
 papersRouter.put('/:id', async (request, response) => {
+  const schema = Yup.object().shape({
+    author: Yup.string(),
+    professor: Yup.string(),
+    title: Yup.string(),
+    subtitle: Yup.string(),
+    publicationDate: Yup.date(),
+    keywords: Yup.array(),
+  });
+
+  try {
+    await schema.validate(request.body, { abortEarly: false });
+  } catch (err) {
+    throw new AppError(err.errors);
+  }
+
   const updatePaperService = new UpdatePaperService();
   const {
     author,
