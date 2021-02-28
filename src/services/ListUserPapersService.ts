@@ -1,4 +1,5 @@
 import { getRepository } from 'typeorm';
+import AppError from '../errors/AppError';
 
 import Paper from '../models/Paper';
 
@@ -11,7 +12,7 @@ class ListUserPapersService {
     });
 
     if (!papers) {
-      throw new Error('No Paper found');
+      throw new AppError('No Paper found');
     }
 
     return papers;

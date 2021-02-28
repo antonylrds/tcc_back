@@ -3,6 +3,7 @@ import path from 'path';
 import { getRepository } from 'typeorm';
 
 import uploadConfig from '../config/upload';
+import AppError from '../errors/AppError';
 
 import Paper from '../models/Paper';
 
@@ -13,7 +14,7 @@ class DeletePaperService {
     const paper = await papersRepository.findOne(id);
 
     if (!paper) {
-      throw new Error('Paper not found');
+      throw new AppError('Paper not found');
     }
 
     if (paper.path) {

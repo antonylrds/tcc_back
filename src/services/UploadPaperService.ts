@@ -3,6 +3,7 @@ import path from 'path';
 import { getRepository } from 'typeorm';
 
 import uploadConfig from '../config/upload';
+import AppError from '../errors/AppError';
 
 import Paper from '../models/Paper';
 
@@ -18,14 +19,14 @@ class UploadPaperService {
     const paper = await papersRepository.findOne(id);
 
     if (!paper) {
-      throw new Error('Papers not found');
+      throw new AppError('Papers not found');
     }
 
     if (paper.path) {
       const paperPath = path.join(uploadConfig.directory, paper.path);
-      const paperExists = await fs.promises.stat(paperPath);
+      const fileExists = fs.existsSync(paperPath);
 
-      if (paperExists) {
+      if (fileExists) {
         await fs.promises.unlink(paperPath);
       }
     }

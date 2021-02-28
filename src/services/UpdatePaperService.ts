@@ -1,6 +1,7 @@
 import { getRepository, In } from 'typeorm';
 import Paper from '../models/Paper';
 import KeyWord from '../models/KeyWord';
+import AppError from '../errors/AppError';
 
 interface PaperDTO {
   id: string;
@@ -28,7 +29,7 @@ class UpdatePaperService {
     const paper = await papersRepository.findOne(id);
 
     if (!paper) {
-      throw new Error('Paper not found');
+      throw new AppError('Paper not found');
     }
 
     const existingKeywords = await keywordsRepository.find({

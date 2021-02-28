@@ -1,4 +1,5 @@
 import { getRepository, In } from 'typeorm';
+import AppError from '../errors/AppError';
 import KeyWord from '../models/KeyWord';
 import Paper from '../models/Paper';
 import User from '../models/User';
@@ -32,7 +33,7 @@ class CreatePaperService {
     const user = await usersRepository.findOne(user_id);
 
     if (!user) {
-      throw new Error('User not found');
+      throw new AppError('User not found');
     }
 
     const existingKeywords = await keywordsRepository.find({
