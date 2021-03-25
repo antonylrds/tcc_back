@@ -1,6 +1,6 @@
-import { Column, MigrationInterface, QueryRunner, TableColumn } from 'typeorm';
+import { MigrationInterface, QueryRunner, TableColumn } from 'typeorm';
 
-export default class AddPathColumToPapersTAble1613947435188
+export default class AddPathColumToPapersTAble1616710103720
   implements MigrationInterface {
   public async up(queryRunner: QueryRunner): Promise<void> {
     await queryRunner.addColumn(

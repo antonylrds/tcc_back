@@ -5,7 +5,7 @@ import {
   TableForeignKey,
 } from 'typeorm';
 
-export default class CreateTablePapers1613088896891
+export default class CreateTablePapers1616709982502
   implements MigrationInterface {
   public async up(queryRunner: QueryRunner): Promise<void> {
     await queryRunner.createTable(
@@ -33,6 +33,10 @@ export default class CreateTablePapers1613088896891
           },
           {
             name: 'subtitle',
+            type: 'varchar',
+          },
+          {
+            name: 'abstract',
             type: 'varchar',
           },
           {
