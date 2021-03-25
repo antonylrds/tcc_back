@@ -35,6 +35,9 @@ usersRouter.post('/', async (request, response) => {
     password,
   });
 
+  delete user.password;
+  delete user.id;
+
   return response.json(user);
 });
 
