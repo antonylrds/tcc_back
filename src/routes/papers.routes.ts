@@ -69,6 +69,9 @@ papersRouter.post('/', upload.single('file'), async (request, response) => {
     subtitle: Yup.string().required('Subtítulo é obrigatório'),
     publicationDate: Yup.date().required('Data de publicação é obrigatório'),
     keywords: Yup.array().required('Informe pelo menos uma palavra-chave'),
+    abstract: Yup.string()
+      .max(10000, 'O resumo não pode conter mais que 10.000 caracteres')
+      .required('O resumo não pode ser vazio'),
   });
 
   try {
@@ -84,6 +87,7 @@ papersRouter.post('/', upload.single('file'), async (request, response) => {
     subtitle,
     publicationDate,
     keywords,
+    abstract,
   } = request.body;
 
   const parsedKeywords: string[] = JSON.parse(keywords);
@@ -102,6 +106,7 @@ papersRouter.post('/', upload.single('file'), async (request, response) => {
     user_id: request.user.id,
     keywords: parsedKeywords,
     filename: request.file.filename,
+    abstract,
   });
 
   delete paper.id;

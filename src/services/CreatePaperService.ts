@@ -13,6 +13,7 @@ interface PaperDTO {
   publicationDate: Date;
   keywords: string[];
   filename: string;
+  abstract: string;
 }
 
 class CreatePaperService {
@@ -25,6 +26,7 @@ class CreatePaperService {
     publicationDate,
     keywords,
     filename,
+    abstract,
   }: PaperDTO): Promise<Paper> {
     const papersRepository = getRepository(Paper);
     const usersRepository = getRepository(User);
@@ -61,6 +63,7 @@ class CreatePaperService {
       uploaded_by: user,
       keyWords: [...existingKeywords, ...newKeywords],
       path: filename,
+      abstract,
     });
 
     await papersRepository.save(paper);

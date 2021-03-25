@@ -33,6 +33,9 @@ class Paper {
   @Column()
   subtitle: string;
 
+  @Column()
+  abstract: string;
+
   @ManyToOne(() => User)
   @JoinColumn({ name: 'uploaded_by' })
   uploaded_by: User;
