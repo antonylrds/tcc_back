@@ -5,10 +5,8 @@ import Paper from '../models/Paper';
 interface OptionsDTO {
   author: string;
   professor: string;
-  publicationDateInitial: string;
-  publicationDateFinal: string;
+  publicationYear: string;
   title: string;
-  subtitle: string;
   page: number;
   limit: number;
   keywords: string[];
@@ -18,10 +16,8 @@ class ListPapersService {
   public async execute({
     author,
     professor,
-    publicationDateInitial,
-    publicationDateFinal,
+    publicationYear,
     title,
-    subtitle,
     limit,
     page,
     keywords,
@@ -46,39 +42,42 @@ class ListPapersService {
       ).map(paperRaw => paperRaw.id);
     }
 
+    // Limita a busca aos IDS filtrados no IF anterior
     if (papersIds) {
       papersQuery.andWhere('paper.id IN (:...papersIds)', { papersIds });
     }
 
+    // Busca por subpalavra no campo autor
     if (author) {
       papersQuery.andWhere(`paper.author ilike :author`, {
         author: `%${author}%`,
       });
     }
 
+    // Busca por subpalavra no campo professor orientador
     if (professor) {
       papersQuery.andWhere(`paper.professor ilike :professor`, {
         professor: `%${professor}%`,
       });
     }
 
+    // Busca por subpalavra no título ou subtítulo
     if (title) {
       papersQuery.andWhere(`paper.title ilike :title`, { title: `%${title}%` });
-    }
 
-    if (subtitle) {
-      papersQuery.andWhere(`paper.subtitle ilike :subtitle`, {
-        subtitle: `%${subtitle}%`,
+      papersQuery.orWhere(`paper.subtitle ilike :subtitle`, {
+        subtitle: `%${title}%`,
       });
     }
 
-    if (publicationDateInitial && publicationDateFinal) {
+    // Busca por publicações de um ano em específico
+    if (publicationYear) {
       papersQuery
         .andWhere(`paper.publication_dt >= :publicationDateInitial`, {
-          publicationDateInitial,
+          publicationDateInitial: `01-01-${publicationYear} 00:00:00`,
         })
         .andWhere(`paper.publication_dt <= :publicationDateFinal`, {
-          publicationDateFinal,
+          publicationDateFinal: `12-31-${publicationYear} 23:59:59`,
         });
     }
 
