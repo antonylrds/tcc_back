@@ -11,6 +11,7 @@ interface PaperDTO {
   title?: string;
   subtitle?: string;
   keywords?: string[];
+  abstract?: string;
 }
 
 class UpdatePaperService {
@@ -22,6 +23,7 @@ class UpdatePaperService {
     subtitle,
     publicationDate,
     keywords,
+    abstract,
   }: PaperDTO): Promise<Paper> {
     const papersRepository = getRepository(Paper);
     const keywordsRepository = getRepository(KeyWord);
@@ -56,6 +58,7 @@ class UpdatePaperService {
       subtitle,
       publicationDate,
       keyWords: [...existingKeywords, ...newKeywords],
+      abstract,
     };
 
     await papersRepository.save(updatedPaper);

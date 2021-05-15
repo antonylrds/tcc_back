@@ -149,6 +149,7 @@ papersRouter.put('/:id', async (request, response) => {
     subtitle,
     publicationDate,
     keywords,
+    abstract,
   } = request.body;
 
   const paper = await updatePaperService.excute({
@@ -159,6 +160,7 @@ papersRouter.put('/:id', async (request, response) => {
     subtitle,
     publicationDate,
     keywords,
+    abstract,
   });
 
   return response.json(paper);
