@@ -1,6 +1,7 @@
 import { Router } from 'express';
 import multer from 'multer';
 import * as Yup from 'yup';
+import path from 'path';
 import uploadConfig from '../config/upload';
 
 import ListPapersService from '../services/ListPapersService';
@@ -53,6 +54,13 @@ papersRouter.get('/', async (request, response) => {
   const papers = await listPapersService.execute(objDTO);
 
   return response.json(papers);
+});
+
+papersRouter.get('/download', (req, res) => {
+  const tmpFolder = path.resolve(__dirname, '..', '..', 'tmp');
+  return res.download(
+    path.join(tmpFolder, '00f5ffccdbbf65c912bd-TCC 2021.1 Antony Luan.docx'),
+  );
 });
 
 papersRouter.use(ensureAuthenticated);

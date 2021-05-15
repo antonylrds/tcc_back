@@ -1,6 +1,7 @@
 import express, { Request, Response, NextFunction } from 'express';
 import cors from 'cors';
 import 'express-async-errors';
+import { resolve } from 'path';
 
 import './database';
 
@@ -8,10 +9,11 @@ import routes from './routes';
 import AppError from './errors/AppError';
 
 const app = express();
+const tmpFolder = resolve(__dirname, '..', 'tmp');
 
 app.use(cors());
+app.use('/static', express.static(tmpFolder));
 app.use(express.json());
-app.use('/static', express.static('tmp'));
 app.use(routes);
 
 app.use((err: Error, request: Request, response: Response, _: NextFunction) => {

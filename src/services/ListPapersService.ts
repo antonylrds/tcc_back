@@ -81,7 +81,10 @@ class ListPapersService {
         });
     }
 
-    papersQuery.take(limit).skip((page - 1) * limit);
+    papersQuery
+      .take(limit)
+      .skip((page - 1) * limit)
+      .orderBy('paper.title');
     const papers = await papersQuery.getMany();
 
     return papers;
