@@ -15,8 +15,6 @@ import AppError from '../errors/AppError';
 const papersRouter = Router();
 const upload = multer(uploadConfig);
 
-papersRouter.use(ensureAuthenticated);
-
 papersRouter.get('/', async (request, response) => {
   const schema = Yup.object().shape({
     author: Yup.string(),
@@ -56,6 +54,8 @@ papersRouter.get('/', async (request, response) => {
 
   return response.json(papers);
 });
+
+papersRouter.use(ensureAuthenticated);
 
 papersRouter.post('/', upload.single('file'), async (request, response) => {
   const schema = Yup.object().shape({
