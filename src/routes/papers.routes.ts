@@ -9,6 +9,7 @@ import CreatePaperService from '../services/CreatePaperService';
 import UploadPaperService from '../services/UploadPaperService';
 import DeletePaperService from '../services/DeletePaperService';
 import UpdatePaperService from '../services/UpdatePaperService';
+import GetFilePathService from '../services/GetFilePathService';
 
 import ensureAuthenticated from '../middlewares/ensureAuthenticate';
 import AppError from '../errors/AppError';
@@ -56,11 +57,15 @@ papersRouter.get('/', async (request, response) => {
   return response.json(papers);
 });
 
-papersRouter.get('/download', (req, res) => {
+papersRouter.get('/download/:id', async (request, response) => {
   const tmpFolder = path.resolve(__dirname, '..', '..', 'tmp');
-  return res.download(
-    path.join(tmpFolder, '00f5ffccdbbf65c912bd-TCC 2021.1 Antony Luan.docx'),
-  );
+
+  const { id: paperId } = request.params;
+
+  const getFilePathService = new GetFilePathService();
+  const filePath = await getFilePathService.execute(paperId);
+
+  return response.download(path.join(tmpFolder, filePath));
 });
 
 papersRouter.use(ensureAuthenticated);
