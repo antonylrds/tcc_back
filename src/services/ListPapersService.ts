@@ -24,7 +24,7 @@ class ListPapersService {
     keywords,
   }: OptionsDTO): Promise<Paper[]> {
     const papersRepository = getRepository(Paper);
-    let papersIds: string[];
+    let papersIds: string[] = [];
 
     const papersQuery = papersRepository
       .createQueryBuilder('paper')
@@ -44,7 +44,7 @@ class ListPapersService {
     }
 
     // Limita a busca aos IDS filtrados no IF anterior
-    if (papersIds.length) {
+    if (keywords.length > 0 && papersIds.length > 0) {
       papersQuery.andWhere('paper.id IN (:...papersIds)', { papersIds });
     } else {
       throw new AppError('Nenhum resultado encontrado.');
