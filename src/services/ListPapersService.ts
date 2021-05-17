@@ -48,8 +48,9 @@ class ListPapersService {
       ).map(paperRaw => paperRaw.id);
 
       if (papersIds.length > 0) {
-        console.log(papersIds);
         papersQuery.andWhere('paper.id IN (:...papersIds)', { papersIds });
+      } else {
+        throw new AppError('Nenhum resultado encontrado');
       }
     }
 
