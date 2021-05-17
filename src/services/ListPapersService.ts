@@ -13,6 +13,11 @@ interface OptionsDTO {
   keywords: string[];
 }
 
+interface ResponseDTO {
+  papers: Paper[];
+  total: number;
+}
+
 class ListPapersService {
   public async execute({
     author,
@@ -22,7 +27,7 @@ class ListPapersService {
     limit,
     page,
     keywords,
-  }: OptionsDTO): Promise<Paper[]> {
+  }: OptionsDTO): Promise<ResponseDTO> {
     const papersRepository = getRepository(Paper);
     let papersIds: string[] = [];
 
@@ -41,13 +46,11 @@ class ListPapersService {
           .where('keyword.word IN (:...keywords)', { keywords })
           .getMany()
       ).map(paperRaw => paperRaw.id);
-    }
 
-    // Limita a busca aos IDS filtrados no IF anterior
-    if (keywords.length > 0 && papersIds.length > 0) {
-      papersQuery.andWhere('paper.id IN (:...papersIds)', { papersIds });
-    } else {
-      throw new AppError('Nenhum resultado encontrado.');
+      if (papersIds.length > 0) {
+        console.log(papersIds);
+        papersQuery.andWhere('paper.id IN (:...papersIds)', { papersIds });
+      }
     }
 
     // Busca por subpalavra no campo autor
@@ -66,11 +69,15 @@ class ListPapersService {
 
     // Busca por subpalavra no título ou subtítulo
     if (title) {
-      papersQuery.andWhere(`paper.title ilike :title`, { title: `%${title}%` });
+      // papersQuery.andWhere(`paper.title ilike :title`, { title: `%${title}%` });
+      papersQuery.andWhere(
+        `(paper.title ilike :title OR paper.subtitle ilike :subtitle)`,
+        { title: `%${title}%`, subtitle: `%${title}%` },
+      );
 
-      papersQuery.orWhere(`paper.subtitle ilike :subtitle`, {
-        subtitle: `%${title}%`,
-      });
+      // papersQuery.orWhere(`paper.subtitle ilike :subtitle`, {
+      //   subtitle: `%${title}%`,
+      // });
     }
 
     // Busca por publicações de um ano em específico
@@ -84,6 +91,8 @@ class ListPapersService {
         });
     }
 
+    const total = await papersQuery.getCount();
+
     papersQuery
       .take(limit)
       .skip((page - 1) * limit)
@@ -94,7 +103,7 @@ class ListPapersService {
       throw new AppError('Nenhum resultado encotrado.');
     }
 
-    return papers;
+    return { papers, total };
   }
 }
 
