@@ -1,4 +1,5 @@
 import { getRepository } from 'typeorm';
+import AppError from '../errors/AppError';
 
 import Paper from '../models/Paper';
 
@@ -43,8 +44,10 @@ class ListPapersService {
     }
 
     // Limita a busca aos IDS filtrados no IF anterior
-    if (papersIds) {
+    if (papersIds.length) {
       papersQuery.andWhere('paper.id IN (:...papersIds)', { papersIds });
+    } else {
+      throw new AppError('Nenhum resultado encontrado.');
     }
 
     // Busca por subpalavra no campo autor
@@ -86,6 +89,10 @@ class ListPapersService {
       .skip((page - 1) * limit)
       .orderBy('paper.title');
     const papers = await papersQuery.getMany();
+
+    if (!papers) {
+      throw new AppError('Nenhum resultado encotrado.');
+    }
 
     return papers;
   }
