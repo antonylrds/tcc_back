@@ -172,7 +172,7 @@ papersRouter.put('/:id', async (request, response) => {
     title,
     subtitle,
     publicationDate,
-    keywords,
+    keywords: JSON.parse(keywords),
     abstract,
   });
 
