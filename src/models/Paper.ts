@@ -24,8 +24,8 @@ class Paper {
   @Column()
   professor: string;
 
-  @Column('timestamp without time zone')
-  publication_dt: Date;
+  @Column('timestamp without time zone', { name: 'publication_dt' })
+  publicationDate: Date;
 
   @Column()
   title: string;
