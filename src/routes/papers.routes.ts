@@ -75,7 +75,7 @@ papersRouter.post('/', upload.single('file'), async (request, response) => {
     author: Yup.string().required('Autor(a) é obrigatório'),
     professor: Yup.string().required('Orientador é obrigatório'),
     title: Yup.string().required('Título é obrigatório'),
-    subtitle: Yup.string().required('Subtítulo é obrigatório'),
+    subtitle: Yup.string(),
     publicationDate: Yup.date().required('Data de publicação é obrigatório'),
     keywords: Yup.array().required('Informe pelo menos uma palavra-chave'),
     abstract: Yup.string()
@@ -84,7 +84,7 @@ papersRouter.post('/', upload.single('file'), async (request, response) => {
   });
 
   try {
-    await schema.validate(request.body, { abortEarly: false });
+    await schema.validate(request.body, { abortEarly: true });
   } catch (err) {
     throw new AppError(err.errors);
   }
@@ -140,12 +140,15 @@ papersRouter.patch('/:id', upload.single('file'), async (request, response) => {
 
 papersRouter.put('/:id', async (request, response) => {
   const schema = Yup.object().shape({
-    author: Yup.string(),
-    professor: Yup.string(),
-    title: Yup.string(),
+    author: Yup.string().required('Autor(a) é obrigatório'),
+    professor: Yup.string().required('Orientador é obrigatório'),
+    title: Yup.string().required('Título é obrigatório'),
     subtitle: Yup.string(),
-    publicationDate: Yup.date(),
-    keywords: Yup.array(),
+    publicationDate: Yup.date().required('Data de publicação é obrigatório'),
+    keywords: Yup.array().required('Informe pelo menos uma palavra-chave'),
+    abstract: Yup.string()
+      .max(10000, 'O resumo não pode conter mais que 10.000 caracteres')
+      .required('O resumo não pode ser vazio'),
   });
 
   try {

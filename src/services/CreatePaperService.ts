@@ -59,7 +59,7 @@ class CreatePaperService {
       professor,
       title,
       subtitle,
-      publication_dt: publicationDate,
+      publicationDate,
       uploaded_by: user,
       keyWords: [...existingKeywords, ...newKeywords],
       path: filename,
