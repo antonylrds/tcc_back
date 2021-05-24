@@ -6,6 +6,7 @@ import ListUserPapersService from '../services/ListUserPapersService';
 
 import ensureAuthenticated from '../middlewares/ensureAuthenticate';
 import AppError from '../errors/AppError';
+import DeleteUserService from '../services/DeleteUserService';
 
 const usersRouter = Router();
 
@@ -47,6 +48,15 @@ usersRouter.get('/papers', ensureAuthenticated, async (request, response) => {
   const papers = await listUserPapersService.execute(request.user.id);
 
   return response.json(papers);
+});
+
+usersRouter.delete('/:id', ensureAuthenticated, async (request, response) => {
+  const { id } = request.params;
+  const deleteUserService = new DeleteUserService();
+
+  await deleteUserService.execute(id);
+
+  return response.status(204).send('Usuário removido');
 });
 
 export default usersRouter;
