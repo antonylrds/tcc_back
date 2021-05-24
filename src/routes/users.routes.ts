@@ -11,7 +11,7 @@ import ListUsersService from '../services/ListUsersService';
 
 const usersRouter = Router();
 
-usersRouter.get('/', async (request, response) => {
+usersRouter.get('/', ensureAuthenticated, async (request, response) => {
   const listUsersService = new ListUsersService();
 
   const users = await listUsersService.execute();
@@ -19,7 +19,7 @@ usersRouter.get('/', async (request, response) => {
   return response.json(users);
 });
 
-usersRouter.post('/', async (request, response) => {
+usersRouter.post('/', ensureAuthenticated, async (request, response) => {
   const schema = Yup.object().shape({
     name: Yup.string().required('Nome é obrigatório'),
     email: Yup.string().email('Email inválido').required('Email é obrigatório'),
