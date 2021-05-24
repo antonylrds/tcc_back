@@ -7,11 +7,16 @@ import ListUserPapersService from '../services/ListUserPapersService';
 import ensureAuthenticated from '../middlewares/ensureAuthenticate';
 import AppError from '../errors/AppError';
 import DeleteUserService from '../services/DeleteUserService';
+import ListUsersService from '../services/ListUsersService';
 
 const usersRouter = Router();
 
-usersRouter.get('/', (request, response) => {
-  return response.json({ msg: true });
+usersRouter.get('/', async (request, response) => {
+  const listUsersService = new ListUsersService();
+
+  const users = await listUsersService.execute();
+
+  return response.json(users);
 });
 
 usersRouter.post('/', async (request, response) => {
