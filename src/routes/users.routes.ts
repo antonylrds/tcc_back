@@ -8,6 +8,7 @@ import ensureAuthenticated from '../middlewares/ensureAuthenticate';
 import AppError from '../errors/AppError';
 import DeleteUserService from '../services/DeleteUserService';
 import ListUsersService from '../services/ListUsersService';
+import ChangePasswordService from '../services/ChangePasswordService';
 
 const usersRouter = Router();
 
@@ -53,6 +54,21 @@ usersRouter.get('/papers', ensureAuthenticated, async (request, response) => {
   const papers = await listUserPapersService.execute(request.user.id);
 
   return response.json(papers);
+});
+
+usersRouter.patch('/:id', ensureAuthenticated, async (request, response) => {
+  const { id } = request.params;
+  const { newPassword, oldPassword } = request.body;
+
+  const changePasswordService = new ChangePasswordService();
+
+  await changePasswordService.execute({
+    id: id as string,
+    oldPassword: oldPassword as string,
+    newPassword: newPassword as string,
+  });
+
+  return response.send('Senha alterada com sucesso');
 });
 
 usersRouter.delete('/:id', ensureAuthenticated, async (request, response) => {
